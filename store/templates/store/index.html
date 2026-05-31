@@ -1,27 +1,49 @@
 {% extends 'store/base.html' %}
+{% load static %}
 {% block title %}Dune Dogs Official Merch{% endblock %}
 {% block content %}
 <section class="hero">
   <div class="hero-content">
-    <p class="eyebrow">New Coastal Drop</p>
-    <h1>DUNE DOGS</h1>
-    <p>Official merch for sunburnt soundchecks, late-night drives, and everyone who wants the dog on the dunes look.</p>
+    <img class="hero-logo" src="{% static 'store/dunedogs-logo.png' %}" alt="Dune Dogs">
+    <p class="eyebrow">Official Rock Band Merch</p>
+    <h1>Dune Dogs World</h1>
+    <p>Enter the Dune Dogs universe: loud graphics, weird energy, band-made artifacts, and merch built like a piece of the show.</p>
     <div class="hero-actions">
-      <a class="btn" href="{% url 'products' %}">Shop the Drop</a>
+      <a class="btn" href="{% url 'products' %}">Enter the Store</a>
       <a class="btn secondary" href="{% url 'cart' %}">View Cart</a>
     </div>
   </div>
   <div class="hero-panel" aria-label="Store highlights">
-    <span>Fresh blanks</span>
+    <span>World Pieces</span>
     <strong>{{ products|length }}</strong>
-    <span>Merch pieces live</span>
+    <span>Live in the shop</span>
+  </div>
+</section>
+
+<section class="world-strip" aria-label="Dune Dogs World tags">
+  <span>Rock Band</span>
+  <span>Merch Table</span>
+  <span>Tour Uniform</span>
+  <span>Poster Art</span>
+  <span>Dune Dogs World</span>
+</section>
+
+<section class="brand-story">
+  <div class="story-copy">
+    <p class="eyebrow">Inside the World</p>
+    <h2>Not souvenir merch. A wearable piece of the band.</h2>
+    <p class="lead">Dune Dogs World is the visual home of the band: distorted photos, bold wordmarks, show-night staples, and objects that feel pulled from the practice room, the van, and the stage.</p>
+    <a class="text-link" href="{% url 'products' %}">Shop the current run</a>
+  </div>
+  <div class="story-media">
+    <img src="{% static 'store/dunedogs-merch-tee.jpg' %}" alt="Dune Dogs white tee in front of a vintage Ford van">
   </div>
 </section>
 
 <section class="section-head">
   <div>
     <p class="eyebrow">Featured Goods</p>
-    <h2>Built for beach days and basement shows.</h2>
+    <h2>Merch for the Dune Dogs World uniform.</h2>
   </div>
   <div class="category-bar">
     <a href="{% url 'homepage' %}">All</a>

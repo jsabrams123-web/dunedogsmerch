@@ -5,16 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Dune Dogs Merch{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'store/style.css' %}">
 </head>
 <body>
 <header class="site-header">
   <div class="nav-wrap">
     <a class="brand" href="{% url 'homepage' %}">
-      <span class="brand-mark">DD</span>
+      <img class="brand-logo" src="{% static 'store/dunedogs-logo.png' %}" alt="Dune Dogs">
       <span>
-        <span class="brand-main">Dune Dogs</span>
-        <span class="brand-sub">Official Merch</span>
+        <span class="brand-main">Dune Dogs World</span>
+        <span class="brand-sub">Band Merch Store</span>
       </span>
     </a>
     <nav>
@@ -30,8 +33,8 @@
   {% block content %}{% endblock %}
 </main>
 <footer class="footer">
-  <span>Dune Dogs Official Merch</span>
-  <span>Hats, tees, hoodies, and tour-ready essentials.</span>
+  <span>Dune Dogs World</span>
+  <span>Official rock band merch, visual artifacts, and limited-run uniform pieces.</span>
 </footer>
 </body>
 </html>
