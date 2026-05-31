@@ -11,14 +11,17 @@
 <header class="site-header">
   <div class="nav-wrap">
     <a class="brand" href="{% url 'homepage' %}">
-      <span class="brand-main">DUNE DOGS</span>
-      <span class="brand-sub">Official Merch Store</span>
+      <span class="brand-mark">DD</span>
+      <span>
+        <span class="brand-main">Dune Dogs</span>
+        <span class="brand-sub">Official Merch</span>
+      </span>
     </a>
     <nav>
       <a href="{% url 'homepage' %}">Home</a>
       <a href="{% url 'products' %}">Shop</a>
-      <a class="cart-pill" href="{% url 'cart' %}">Cart ({{ cart_count|default:0 }})</a>
       <a href="{% url 'orders' %}">Orders</a>
+      <a class="cart-pill" href="{% url 'cart' %}">Cart <span>{{ cart_count|default:0 }}</span></a>
       <a href="/admin/">Admin</a>
     </nav>
   </div>
@@ -27,7 +30,8 @@
   {% block content %}{% endblock %}
 </main>
 <footer class="footer">
-  Dune Dogs Official Merch - Hats, Tees, and Sweatshirts
+  <span>Dune Dogs Official Merch</span>
+  <span>Hats, tees, hoodies, and tour-ready essentials.</span>
 </footer>
 </body>
 </html>
