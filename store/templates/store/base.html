@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dune Dogs Merch{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="{% url 'homepage' %}">
+      <span class="brand-main">DUNE DOGS</span>
+      <span class="brand-sub">Official Merch Store</span>
+    </a>
+    <nav>
+      <a href="{% url 'homepage' %}">Home</a>
+      <a href="{% url 'products' %}">Shop</a>
+      <a class="cart-pill" href="{% url 'cart' %}">Cart ({{ cart_count|default:0 }})</a>
+      <a href="{% url 'orders' %}">Orders</a>
+      <a href="/admin/">Admin</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  Dune Dogs Official Merch - Hats, Tees, and Sweatshirts
+</footer>
+</body>
+</html>

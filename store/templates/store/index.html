@@ -1,0 +1,47 @@
+{% extends 'store/base.html' %}
+{% block title %}Dune Dogs Official Merch{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <p class="eyebrow">New Drop</p>
+    <h1>DUNE DOGS</h1>
+    <p>Official merch inspired by coastal rock energy. Shop hats, tees, and sweatshirts from the Dune Dogs collection.</p>
+    <div class="hero-actions">
+      <a class="btn" href="{% url 'products' %}">Shop the Drop</a>
+      <a class="btn secondary" href="{% url 'cart' %}">View Cart</a>
+    </div>
+  </div>
+</section>
+
+<div class="category-bar">
+  <a href="{% url 'homepage' %}">All Merch</a>
+  {% for category in categories %}
+    <a href="?category={{ category.id }}">{{ category.name }}</a>
+  {% endfor %}
+</div>
+
+<section class="grid">
+  {% for product in products %}
+  <article class="card product-card">
+    <a href="{% url 'product_detail' product.id %}">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    </a>
+    <div class="product-info">
+      <h3>{{ product.name }}</h3>
+      <p class="muted">{{ product.description }}</p>
+      <div class="price">${{ product.price }}</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn secondary" href="{% url 'product_detail' product.id %}">View Item</a>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="product" value="{{ product.id }}">
+          <button type="submit">Add to Cart</button>
+        </form>
+      </div>
+    </div>
+  </article>
+  {% empty %}
+  <div class="empty">No products found.</div>
+  {% endfor %}
+</section>
+{% endblock %}

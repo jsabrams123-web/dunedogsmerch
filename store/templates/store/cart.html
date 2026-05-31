@@ -1,0 +1,27 @@
+{% extends 'store/base.html' %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<section class="hero hero-small"><div class="hero-content"><p class="eyebrow">Checkout Preview</p><h2>Your Cart</h2><p class="lead">Review Dune Dogs merch and adjust quantities.</p></div></section>
+{% if cart_items %}
+<table>
+  <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Item Total</th><th>Actions</th></tr>
+  {% for item in cart_items %}
+  <tr>
+    <td>{{ item.product.name }}</td>
+    <td>${{ item.product.price }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>${{ item.item_total }}</td>
+    <td>
+      <div class="qty-actions">
+        <form method="post">{% csrf_token %}<input type="hidden" name="product" value="{{ item.product.id }}"><button type="submit">+</button></form>
+        <form method="post">{% csrf_token %}<input type="hidden" name="product" value="{{ item.product.id }}"><input type="hidden" name="remove" value="1"><button type="submit" class="secondary">-</button></form>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+  <tr><td colspan="3"><strong>Total</strong></td><td colspan="2"><strong>${{ total }}</strong></td></tr>
+</table>
+{% else %}
+<div class="empty">Your cart is empty. Go shop the Dune Dogs merch drop.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<section class="hero hero-small"><div class="hero-content"><p class="eyebrow">Database Demo</p><h2>Orders</h2><p class="lead">These orders show customer and product records stored in the Django database.</p></div></section>
+{% if orders %}
+<table>
+  <tr><th>Order #</th><th>Product</th><th>Customer</th><th>Quantity</th><th>Price</th><th>Date</th><th>Status</th></tr>
+  {% for order in orders %}
+  <tr>
+    <td>{{ order.id }}</td>
+    <td>{{ order.product.name }}</td>
+    <td>{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
+    <td>{{ order.quantity }}</td>
+    <td>${{ order.price }}</td>
+    <td>{{ order.date }}</td>
+    <td>{% if order.status %}Completed{% else %}Pending{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<div class="empty">No orders available yet.</div>
+{% endif %}
+{% endblock %}
