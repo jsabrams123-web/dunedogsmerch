@@ -1,0 +1,44 @@
+{% extends 'store/base.html' %}
+{% block title %}Order Saved{% endblock %}
+{% block content %}
+<section class="hero hero-small">
+  <div class="hero-content">
+    <p class="eyebrow">Order Saved</p>
+    <h2>Database order created.</h2>
+    <p class="lead">Your cart was written to the Django database. This is the handoff point for Stripe or Shopify checkout.</p>
+  </div>
+</section>
+
+{% if orders %}
+<section class="cart-shell">
+  <div class="table-wrap">
+    <table>
+      <tr><th>Order #</th><th>Product</th><th>Customer</th><th>Quantity</th><th>Total</th><th>Status</th></tr>
+      {% for order in orders %}
+      <tr>
+        <td><strong>#{{ order.id }}</strong></td>
+        <td>{{ order.product.name }}</td>
+        <td>{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
+        <td>{{ order.quantity }}</td>
+        <td>${{ order.price }}</td>
+        <td><span class="status pending">Pending</span></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <aside class="summary-box">
+    <p class="eyebrow">Saved Total</p>
+    <div class="summary-row"><span>Total</span><strong>${{ total }}</strong></div>
+    <a class="btn" href="{% url 'products' %}">Shop More</a>
+    <a class="text-link" href="{% url 'orders' %}">View all orders</a>
+  </aside>
+</section>
+{% else %}
+<div class="empty empty-large">
+  <p class="eyebrow">No Recent Order</p>
+  <h2>No order in this session.</h2>
+  <p class="lead">Add merch to your cart and checkout to create database records.</p>
+  <a class="btn" href="{% url 'products' %}">Shop Merch</a>
+</div>
+{% endif %}
+{% endblock %}

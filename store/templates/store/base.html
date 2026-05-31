@@ -30,6 +30,13 @@
   </div>
 </header>
 <main class="container">
+  {% if messages %}
+  <section class="messages" aria-label="Site messages">
+    {% for message in messages %}
+      <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </section>
+  {% endif %}
   {% block content %}{% endblock %}
 </main>
 <footer class="footer">

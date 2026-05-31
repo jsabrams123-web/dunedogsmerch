@@ -22,4 +22,10 @@ urlpatterns = [
     path('cart/', views.cart, name='cart'),
     # Cart page
     # This fixes the NoReverseMatch error for {% url 'cart' %}
+
+    path('checkout/', views.checkout, name='checkout'),
+    # Checkout form that saves customer/order rows to the database
+
+    path('order-confirmation/', views.order_confirmation, name='order_confirmation'),
+    # Confirmation page for the most recent database-backed checkout
 ]

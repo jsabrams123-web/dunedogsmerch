@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<section class="hero hero-small">
+  <div class="hero-content">
+    <p class="eyebrow">Database Checkout</p>
+    <h2>Save the Order</h2>
+    <p class="lead">This checkout writes customer and order records into the Django database before payment integration is added.</p>
+  </div>
+</section>
+
+<section class="checkout-shell">
+  <form class="checkout-form" method="post">
+    {% csrf_token %}
+    <p class="eyebrow">Customer Info</p>
+    <div class="form-grid">
+      {% for field in form %}
+      <label>
+        <span>{{ field.label }}</span>
+        {{ field }}
+        {% if field.errors %}
+          <small>{{ field.errors|striptags }}</small>
+        {% endif %}
+      </label>
+      {% endfor %}
+    </div>
+    <button type="submit">Save Order</button>
+  </form>
+
+  <aside class="summary-box">
+    <p class="eyebrow">Order Summary</p>
+    {% for item in cart_items %}
+      <div class="checkout-line">
+        <span>{{ item.product.name }} x {{ item.quantity }}</span>
+        <strong>${{ item.item_total }}</strong>
+      </div>
+    {% endfor %}
+    <div class="summary-row"><span>Total</span><strong>${{ total }}</strong></div>
+  </aside>
+</section>
+{% endblock %}

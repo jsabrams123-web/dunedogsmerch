@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 # render: returns an HTML page with data
 # get_object_or_404: returns an object or a 404 page if it does not exist
@@ -5,6 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Category, Products, Customer, Order
 # Import the database models used by this app
+from .forms import CheckoutForm
 
 
 def _get_cart(request):
@@ -185,6 +187,16 @@ def cart(request):
         return redirect("cart")
 
     cart = _get_cart(request)
+    cart_items, total = _build_cart_items(cart)
+
+    return render(request, "store/cart.html", {
+        "cart_items": cart_items,
+        "total": total,
+        "cart_count": sum(cart.values()),
+    })
+
+
+def _build_cart_items(cart):
     cart_items = []
     total = 0
 
@@ -203,8 +215,81 @@ def cart(request):
             # If a product was deleted from the database, skip it
             continue
 
-    return render(request, "store/cart.html", {
+    return cart_items, total
+
+
+def checkout(request):
+    """
+    Checkout page.
+
+    GET:
+    - Shows the checkout form and cart summary
+
+    POST:
+    - Creates/updates a customer
+    - Saves one database Order row for each cart item
+    - Clears the session cart after the order is saved
+    """
+    cart = _get_cart(request)
+    cart_items = []
+    cart_items, total = _build_cart_items(cart)
+
+    if not cart_items:
+        messages.warning(request, "Add an item before checking out.")
+        return redirect("products")
+
+    if request.method == "POST":
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            customer, _created = Customer.objects.update_or_create(
+                email=form.cleaned_data["email"],
+                defaults={
+                    "first_name": form.cleaned_data["first_name"],
+                    "last_name": form.cleaned_data["last_name"],
+                    "phone": form.cleaned_data["phone"],
+                    "password": "checkout-only",
+                },
+            )
+
+            saved_order_ids = []
+            for item in cart_items:
+                order = Order.objects.create(
+                    product=item["product"],
+                    customer=customer,
+                    quantity=item["quantity"],
+                    price=item["item_total"],
+                    address=form.cleaned_data["address"],
+                    phone=form.cleaned_data["phone"],
+                    status=False,
+                )
+                saved_order_ids.append(order.id)
+
+            _save_cart(request, {})
+            request.session["last_order_ids"] = saved_order_ids
+            messages.success(request, "Order saved to the database.")
+            return redirect("order_confirmation")
+    else:
+        form = CheckoutForm()
+
+    return render(request, "store/checkout.html", {
+        "form": form,
         "cart_items": cart_items,
+        "total": total,
+        "cart_count": sum(cart.values()),
+    })
+
+
+def order_confirmation(request):
+    """
+    Shows the most recent checkout saved during this session.
+    """
+    order_ids = request.session.get("last_order_ids", [])
+    orders = Order.objects.filter(id__in=order_ids).select_related("product", "customer")
+    total = sum(order.price for order in orders)
+    cart = _get_cart(request)
+
+    return render(request, "store/order_confirmation.html", {
+        "orders": orders,
         "total": total,
         "cart_count": sum(cart.values()),
     })

@@ -7,6 +7,13 @@ It already includes:
 - Prices: T-Shirts $30, Hats $35, Sweatshirts $60
 - Sample customers and orders
 - Updated Dune Dogs styled homepage, shop page, cart, and orders page
+- Database-backed checkout that saves customers and orders
+
+How to personally edit words and details:
+- Open EDITING_GUIDE.md in this folder.
+- Product names, prices, images, and descriptions can be edited in the Django admin.
+- Homepage text lives in store/templates/store/index.html.
+- Colors, fonts, spacing, and layout live in store/static/store/style.css.
 
 Admin login:
 Username: admin
@@ -25,5 +32,12 @@ How to run on Mac:
 5. Admin panel:
    http://127.0.0.1:8000/admin/
 
+Database checkout:
+1. Add a product to the cart.
+2. Go to Cart.
+3. Click Checkout.
+4. Fill in the form and click Save Order.
+5. The saved order appears on the Orders page.
+
 Video talking point:
-"I customized the original Django e-commerce application into a Dune Dogs merch store. I updated the homepage, styling, product cards, categories, product names, prices, cart page, and orders page while keeping the Django functionality working."
+"I customized the original Django e-commerce application into a Dune Dogs merch store. I updated the homepage, styling, product cards, categories, product names, prices, cart page, checkout page, and orders page while keeping the Django database functionality working."
