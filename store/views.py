@@ -156,22 +156,6 @@ def product_detail(request, pk):
     })
 
 
-def customer_orders(request):
-    """
-    Orders page.
-    Displays all orders in the database.
-    """
-    orders = Order.objects.all()
-
-    cart = _get_cart(request)
-
-    return render(request, "store/orders.html", {
-        "orders": orders,
-        "cart": cart,
-        "cart_count": sum(cart.values()),
-    })
-
-
 def cart(request):
     """
     Cart page.

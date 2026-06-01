@@ -16,9 +16,6 @@ urlpatterns = [
     # Product detail page
     # <int:pk> means this route expects an integer primary key
 
-    path('orders/', views.customer_orders, name='orders'),
-    # Orders page
-
     path('cart/', views.cart, name='cart'),
     # Cart page
     # This fixes the NoReverseMatch error for {% url 'cart' %}

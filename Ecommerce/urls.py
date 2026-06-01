@@ -1,15 +1,9 @@
-from django.contrib import admin
-# Import Django admin site
-
 from django.urls import path, include
 # path: defines URL routes
 # include: allows us to include app-level URLs
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # URL for Django admin panel
-
     path('', include('store.urls')),
     # All main website URLs are handled by the store app
 ]

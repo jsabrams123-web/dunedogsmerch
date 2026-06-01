@@ -2,16 +2,9 @@
 
 ## Edit Product Names, Prices, Images, And Descriptions
 
-Use the Django admin panel:
+The public site does not expose Django admin anymore, so fans will not see a login page.
 
-1. Start the site.
-2. Open `http://127.0.0.1:8011/admin/`.
-3. Log in:
-   - Username: `admin`
-   - Password: `Admin12345!`
-4. Open `Products`.
-5. Click any product to edit its name, price, category, description, or image.
-6. Click `Save`.
+For now, the cleanest way to edit product records is to ask Codex to update them, or edit the database from Django code.
 
 Those changes are saved in `db.sqlite3`, the Django database file.
 
@@ -32,7 +25,7 @@ Common lines to change:
 
 Save the file and refresh the browser.
 
-## Edit Shop, Cart, Checkout, And Orders Words
+## Edit Shop, Cart, Checkout, And Order Confirmation Words
 
 Templates are here:
 
@@ -41,7 +34,6 @@ Templates are here:
 - Cart page: `store/templates/store/cart.html`
 - Checkout page: `store/templates/store/checkout.html`
 - Order confirmation page: `store/templates/store/order_confirmation.html`
-- Orders database page: `store/templates/store/orders.html`
 
 ## Edit Colors, Fonts, Spacing, And Layout
 
@@ -74,10 +66,9 @@ If you replace a file with the same name, refresh the browser to see the update.
 
 The cart is stored in the browser session while shopping.
 
-When a customer checks out, the site saves:
+When a customer submits checkout details, the site saves:
 
 - Customer info into `Customer`
 - One `Order` row for each cart item
-- The order appears on `/orders/`
 
 This is the current foundation for adding Stripe, Shopify, or another payment provider next.

@@ -23,9 +23,7 @@
     <nav>
       <a href="{% url 'homepage' %}">Home</a>
       <a href="{% url 'products' %}">Shop</a>
-      <a href="{% url 'orders' %}">Orders</a>
       <a class="cart-pill" href="{% url 'cart' %}">Cart <span>{{ cart_count|default:0 }}</span></a>
-      <a href="/admin/">Admin</a>
     </nav>
   </div>
 </header>
