@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+{% block title %}Dune Dogs World | Official Merch{% endblock %}
+{% block content %}
+<section class="hero hero-home">
+  <figure class="hero-photo" role="img" aria-label="Dune Dogs band portrait at the rail"></figure>
+  <div class="hero-copy">
+    <div>
+      <h1>Wear the sound.</h1>
+    </div>
+    <div class="hero-detail">
+      <div class="hero-actions">
+        <a class="btn" href="{% url 'products' %}">See all four pieces</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-head home-showcase-head">
+  <div>
+    <p class="eyebrow">The Live Rack</p>
+    <h2 class="rack-heading">Official band goods</h2>
+  </div>
+</section>
+
+<section class="home-showcase" aria-label="Dune Dogs World merchandise">
+  {% for product in products %}
+  <article class="showcase-piece">
+    <a href="{% url 'product_detail' product.id %}">
+      <div class="showcase-media">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      </div>
+      <div class="showcase-caption">
+        <h3>{{ product.name }}</h3>
+        <span>${{ product.price }}</span>
+      </div>
+    </a>
+  </article>
+  {% empty %}
+  <div class="empty">No products found.</div>
+  {% endfor %}
+</section>
+{% endblock %}

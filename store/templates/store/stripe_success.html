@@ -1,0 +1,22 @@
+{% extends 'store/base.html' %}
+{% block title %}Checkout Complete | Dune Dogs World{% endblock %}
+{% block content %}
+<section class="hero hero-small">
+  <div class="hero-copy">
+    <p class="eyebrow">Checkout Complete</p>
+    <h1>You are in.</h1>
+    <p class="lead">Thanks for supporting Dune Dogs World.</p>
+  </div>
+</section>
+
+{% if order %}
+<section class="summary-box checkout-complete">
+  <div class="summary-row"><span>Service fee</span><strong>${{ order.service_fee_amount|floatformat:2 }}</strong></div>
+  <div class="summary-row"><span>Order total</span><strong>${{ order.total_amount|floatformat:2 }}</strong></div>
+</section>
+{% endif %}
+
+<div class="checkout-complete-action">
+  <a class="btn" href="{% url 'products' %}">Shop More</a>
+</div>
+{% endblock %}

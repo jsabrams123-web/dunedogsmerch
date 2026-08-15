@@ -1,0 +1,43 @@
+{% extends 'store/base.html' %}
+{% block title %}Shop Dune Dogs World{% endblock %}
+{% block content %}
+<section class="hero hero-small shop-hero">
+  <div class="hero-copy">
+    <h1>The Live Rack</h1>
+  </div>
+</section>
+<section class="shop-toolbar" aria-label="Catalog controls">
+  <p><strong>{{ products|length }}</strong> live pieces</p>
+  <div class="category-bar">
+    <a href="{% url 'products' %}">All Four</a>
+    {% for category in categories %}
+      <a href="?category={{ category.id }}">{{ category.name }}</a>
+    {% endfor %}
+  </div>
+</section>
+<section class="grid product-grid product-grid-editorial">
+  {% for product in products %}
+  <article class="product-card">
+    <a class="product-media" href="{% url 'product_detail' product.id %}">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    </a>
+    <div class="product-info">
+      <p class="product-kicker">{{ product.category.name }}</p>
+      <h3>{{ product.name }}</h3>
+      <p class="muted">{{ product.description }}</p>
+      <div class="product-row">
+        <div class="price">${{ product.price }}</div>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="product" value="{{ product.id }}">
+          <button type="submit">Add to cart</button>
+        </form>
+      </div>
+      <a class="text-link" href="{% url 'product_detail' product.id %}">See the full piece</a>
+    </div>
+  </article>
+  {% empty %}
+  <div class="empty">No live pieces in this category.</div>
+  {% endfor %}
+</section>
+{% endblock %}

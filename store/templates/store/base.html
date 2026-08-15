@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dune Dogs World{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-wrap">
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="{% url 'homepage' %}">Home</a>
+      <a href="{% url 'products' %}">Shop</a>
+    </nav>
+    <a class="brand" href="{% url 'homepage' %}">
+      <img class="brand-logo" src="{% static 'store/dunedogs-world-logo.png' %}" alt="Dune Dogs World">
+    </a>
+    <nav class="utility-nav" aria-label="Store navigation">
+      <a class="cart-pill" href="{% url 'cart' %}">Cart <span>{{ cart_count|default:0 }}</span></a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  {% if messages %}
+  <section class="messages" aria-label="Site messages">
+    {% for message in messages %}
+      <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </section>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <div>
+    <span>Dune Dogs World</span>
+  </div>
+  <div class="footer-links">
+    <a href="{% url 'homepage' %}">Home</a>
+    <a href="{% url 'products' %}">Shop</a>
+    <a href="{% url 'cart' %}">Cart</a>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+[build]
+builder = "RAILPACK"
+
+[deploy]
+preDeployCommand = "python manage.py migrate --noinput"
+startCommand = "python manage.py collectstatic --noinput && gunicorn Ecommerce.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+healthcheckPath = "/healthz/"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
