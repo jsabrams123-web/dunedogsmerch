@@ -3,8 +3,8 @@ builder = "RAILPACK"
 buildCommand = "python -m pip install --no-cache-dir -r requirements.txt"
 
 [deploy]
-preDeployCommand = "python manage.py migrate --noinput"
-startCommand = "python manage.py collectstatic --noinput && gunicorn Ecommerce.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+preDeployCommand = "python -m pip install --no-cache-dir -r requirements.txt && python manage.py migrate --noinput"
+startCommand = "python -m pip install --no-cache-dir -r requirements.txt && python manage.py collectstatic --noinput && python -m gunicorn Ecommerce.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 2 --timeout 120 --access-logfile - --error-logfile -"
 healthcheckPath = "/healthz/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
