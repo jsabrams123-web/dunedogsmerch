@@ -221,9 +221,31 @@ if not DEBUG:
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
     STORAGES = {
         "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            # Keep a missing asset from turning an otherwise healthy storefront
+            # into a 500 response. Assets are collected during Railway deploys,
+            # while this backend still serves compressed static files efficiently.
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
         },
     }
+
+# Railway captures standard output, so application errors remain visible in the
+# deploy logs instead of collapsing into an unhelpful public 500 page.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
