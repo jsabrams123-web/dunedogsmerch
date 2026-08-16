@@ -1042,6 +1042,8 @@ nav a:hover { background: var(--accent-light); }
     min-height: 76px;
     display: flex;
     position: relative;
+    flex-direction: row;
+    align-items: center;
     gap: 0;
     padding: 0;
   }
