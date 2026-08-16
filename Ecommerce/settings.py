@@ -200,9 +200,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'media']
 
-# The current catalog imagery is intentionally versioned with the storefront.
-# On a hosted build, collectstatic includes it alongside the CSS and logo assets.
-MEDIA_URL = '/media/' if DEBUG else STATIC_URL
+# The catalog imagery is versioned with the storefront and copied into
+# staticfiles during hosted builds. Keep media and static prefixes distinct:
+# Django's production static storage requires this even when the source photos
+# live in the media folder locally.
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -1,9 +1,10 @@
 {% extends 'store/base.html' %}
+{% load static %}
 {% block title %}{{ product.name }} | Dune Dogs World{% endblock %}
 {% block content %}
 <article class="detail-card">
   <div class="detail-media">
-    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    <img src="{% static product.image.name %}" alt="{{ product.name }}">
   </div>
   <div class="detail-copy">
     <p class="eyebrow">{{ product.category.name }}</p>

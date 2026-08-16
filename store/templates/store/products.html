@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load static %}
 {% block title %}Shop Dune Dogs World{% endblock %}
 {% block content %}
 <section class="hero hero-small shop-hero">
@@ -19,7 +20,7 @@
   {% for product in products %}
   <article class="product-card">
     <a class="product-media" href="{% url 'product_detail' product.id %}">
-      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      <img src="{% static product.image.name %}" alt="{{ product.name }}">
     </a>
     <div class="product-info">
       <p class="product-kicker">{{ product.category.name }}</p>

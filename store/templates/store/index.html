@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load static %}
 {% block title %}Dune Dogs World | Official Merch{% endblock %}
 {% block content %}
 <section class="hero hero-home">
@@ -27,7 +28,7 @@
   <article class="showcase-piece">
     <a href="{% url 'product_detail' product.id %}">
       <div class="showcase-media">
-        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        <img src="{% static product.image.name %}" alt="{{ product.name }}">
       </div>
       <div class="showcase-caption">
         <h3>{{ product.name }}</h3>

@@ -27,6 +27,12 @@ class StripeCheckoutTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b"ok")
 
+    def test_catalog_images_use_static_asset_urls(self):
+        response = self.client.get(reverse("products"))
+
+        self.assertContains(response, "/static/uploads/products/black_logo_tee.png")
+        self.assertNotContains(response, "/media/uploads/products/black_logo_tee.png")
+
     def _add_product_to_cart(self):
         session = self.client.session
         session["cart"] = {str(self.product.id): 2}
