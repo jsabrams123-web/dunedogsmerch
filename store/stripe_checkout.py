@@ -98,14 +98,19 @@ def create_checkout_session(request, cart_items, shipping_amount, service_fee_am
             submit_type="pay",
         )
     except stripe.error.StripeError as error:
+        logger.error(
+            "Stripe Checkout session creation failed: type=%s code=%s param=%s request_id=%s",
+            getattr(error, "type", None),
+            getattr(error, "code", None),
+            getattr(error, "param", None),
+            getattr(error, "request_id", None),
+        )
         if isinstance(error, stripe.error.AuthenticationError):
             logger.warning("Stripe Checkout rejected the configured secret key.")
             if settings.DEBUG:
                 raise StripeCheckoutError(
                     "Stripe rejected the test secret key. Replace it with a current test-mode secret key and restart the preview."
                 ) from error
-        else:
-            logger.exception("Stripe Checkout session creation failed")
         raise StripeCheckoutError("Secure checkout is temporarily unavailable. Please try again shortly.") from error
 
     if not session.url or not session.id:

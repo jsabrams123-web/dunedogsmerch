@@ -244,6 +244,11 @@ LOGGING = {
             "level": "ERROR",
             "propagate": False,
         },
+        "store.stripe_checkout": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 
