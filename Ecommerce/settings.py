@@ -106,6 +106,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Railway probes this endpoint from a private IP address that is not a
+    # public storefront host. Answer it before Django's HTTPS redirect checks
+    # validate the request host.
+    'Ecommerce.middleware.RailwayHealthcheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

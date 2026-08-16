@@ -27,6 +27,16 @@ class StripeCheckoutTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b"ok")
 
+    @override_settings(
+        ALLOWED_HOSTS=["dunedogshop.com"],
+        SECURE_SSL_REDIRECT=True,
+    )
+    def test_healthcheck_allows_railways_private_probe_host(self):
+        response = self.client.get("/healthz/", HTTP_HOST="100.64.0.2")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b"ok")
+
     def test_catalog_images_use_static_asset_urls(self):
         response = self.client.get(reverse("products"))
 
