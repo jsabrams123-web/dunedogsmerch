@@ -1068,7 +1068,13 @@ nav a:hover { background: var(--accent-light); }
   .hero-home {
     margin-bottom: 54px;
   }
-  .hero-photo { min-height: 430px; background-position: 55% center; }
+  .hero-photo {
+    min-height: 0;
+    aspect-ratio: 1099 / 761;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+  }
   .hero-home .hero-copy {
     width: min(1220px, calc(100% - 28px));
     display: block;
