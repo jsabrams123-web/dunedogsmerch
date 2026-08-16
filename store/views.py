@@ -33,16 +33,57 @@ def _save_cart(request, cart):
     request.session.modified = True
 
 
-def _cart_count(cart):
-    """Count only pieces that are still live in the storefront."""
-    if not cart:
-        return 0
+def _parse_cart_item_key(raw_key):
+    product_key, separator, size = str(raw_key).partition(":")
+    try:
+        product_id = int(product_key)
+    except (TypeError, ValueError):
+        return None, ""
 
-    live_product_ids = {
-        str(product_id)
-        for product_id in Products.objects.filter(id__in=cart.keys(), is_active=True).values_list("id", flat=True)
+    return product_id, size.strip().upper() if separator else ""
+
+
+def _cart_item_key(product, size=""):
+    return f"{product.id}:{size}" if product.requires_size else str(product.id)
+
+
+def _valid_cart_entries(cart):
+    product_ids = {
+        product_id
+        for product_id, _ in (_parse_cart_item_key(key) for key in cart)
+        if product_id is not None
     }
-    return sum(quantity for product_id, quantity in cart.items() if product_id in live_product_ids)
+    if not product_ids:
+        return []
+
+    products = {
+        product.id: product
+        for product in Products.objects.filter(id__in=product_ids, is_active=True).select_related("category")
+    }
+    entries = []
+    for raw_key, raw_quantity in cart.items():
+        product_id, size = _parse_cart_item_key(raw_key)
+        product = products.get(product_id)
+        try:
+            quantity = int(raw_quantity)
+        except (TypeError, ValueError):
+            continue
+
+        if not product or quantity < 1:
+            continue
+        if product.requires_size and size not in product.available_sizes:
+            continue
+        if not product.requires_size and size:
+            continue
+
+        entries.append((str(raw_key), product, size, quantity))
+
+    return entries
+
+
+def _cart_count(cart):
+    """Count only valid, still-live pieces in the storefront."""
+    return sum(quantity for _, _, _, quantity in _valid_cart_entries(cart))
 
 
 def _build_store_context(request):
@@ -64,26 +105,41 @@ def _build_store_context(request):
 
 
 def _update_cart(request):
+    cart_item = request.POST.get("cart_item", "").strip()
     product_id = request.POST.get("product")
     remove = request.POST.get("remove")
 
-    if not product_id:
+    if cart_item:
+        parsed_product_id, size = _parse_cart_item_key(cart_item)
+        product = Products.objects.filter(id=parsed_product_id, is_active=True).select_related("category").first()
+    else:
+        product = Products.objects.filter(id=product_id, is_active=True).select_related("category").first()
+        size = request.POST.get("size", "").strip().upper()
+
+    if not product:
         return
 
-    if not remove and not Products.objects.filter(id=product_id, is_active=True).exists():
+    if product.requires_size:
+        if size not in product.available_sizes:
+            messages.error(request, "Choose a tee size before adding it to your cart.")
+            return
+    elif size:
         return
 
+    cart_item = _cart_item_key(product, size)
     cart = _get_cart(request)
-    product_id = str(product_id)
-    quantity = cart.get(product_id, 0)
+    try:
+        quantity = int(cart.get(cart_item, 0))
+    except (TypeError, ValueError):
+        quantity = 0
 
     if remove:
         if quantity <= 1:
-            cart.pop(product_id, None)
+            cart.pop(cart_item, None)
         else:
-            cart[product_id] = quantity - 1
+            cart[cart_item] = quantity - 1
     else:
-        cart[product_id] = quantity + 1
+        cart[cart_item] = quantity + 1
 
     _save_cart(request, cart)
 
@@ -105,7 +161,7 @@ def product_list(request):
 
 
 def product_detail(request, pk):
-    product = get_object_or_404(Products.objects.filter(is_active=True), pk=pk)
+    product = get_object_or_404(Products.objects.filter(is_active=True).select_related("category"), pk=pk)
 
     if request.method == "POST":
         _update_cart(request)
@@ -123,16 +179,13 @@ def _build_cart_items(cart):
     cart_items = []
     total = 0
 
-    for product_id, quantity in cart.items():
-        try:
-            product = Products.objects.get(id=product_id, is_active=True)
-        except Products.DoesNotExist:
-            continue
-
+    for cart_item, product, size, quantity in _valid_cart_entries(cart):
         item_total = product.price * quantity
         total += item_total
         cart_items.append({
+            "cart_item": cart_item,
             "product": product,
+            "size": size,
             "quantity": quantity,
             "item_total": item_total,
         })
@@ -242,6 +295,7 @@ def checkout(request):
                 {
                     "product_id": item["product"].id,
                     "name": item["product"].name,
+                    "size": item["size"],
                     "quantity": item["quantity"],
                     "unit_price": item["product"].price,
                     "line_total": item["item_total"],

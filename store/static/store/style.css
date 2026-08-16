@@ -1130,10 +1130,118 @@ nav a:hover { background: var(--accent-light); }
   text-shadow: 5px 5px 0 var(--accent-light);
 }
 
+/* TEE SIZE SELECTION */
+.product-purchase {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.product-purchase .product-row { margin-top: 0; }
+
+.size-select {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.size-select select {
+  width: 100%;
+  min-height: 42px;
+  appearance: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  padding: 8px 10px;
+  background: var(--white);
+  color: var(--navy);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.size-select select:focus {
+  outline: 3px solid rgba(47, 95, 184, .24);
+  border-color: var(--accent);
+}
+
+.detail-form {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+}
+
+.size-options {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.size-options legend {
+  margin-bottom: 10px;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.size-options-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.size-options input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.size-options label {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  background: var(--white);
+  color: var(--navy);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.size-options input:checked + label {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.size-options input:focus-visible + label {
+  outline: 3px solid rgba(47, 95, 184, .34);
+  outline-offset: 2px;
+}
+
+.cart-size {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 @media (max-width: 760px) {
   .hero-small { margin: 26px 0 22px; padding-bottom: 14px; }
   .hero-small h1 { font-size: 36px; }
   .shop-hero h1 { text-shadow: 4px 4px 0 var(--accent-light); }
   .rack-heading { text-shadow: 4px 4px 0 var(--accent-light); }
+  .size-options-list { max-width: 340px; }
 }
 /* BAND-SITE HOME PASS END */

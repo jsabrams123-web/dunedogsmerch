@@ -15,14 +15,17 @@
       <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Item Total</th><th>Actions</th></tr>
       {% for item in cart_items %}
       <tr>
-        <td><strong>{{ item.product.name }}</strong></td>
+        <td>
+          <strong>{{ item.product.name }}</strong>
+          {% if item.size %}<span class="cart-size">Size {{ item.size }}</span>{% endif %}
+        </td>
         <td>${{ item.product.price|floatformat:2 }}</td>
         <td>{{ item.quantity }}</td>
         <td>${{ item.item_total|floatformat:2 }}</td>
         <td>
           <div class="qty-actions">
-            <form method="post">{% csrf_token %}<input type="hidden" name="product" value="{{ item.product.id }}"><button type="submit" aria-label="Add one more {{ item.product.name }}">+</button></form>
-            <form method="post">{% csrf_token %}<input type="hidden" name="product" value="{{ item.product.id }}"><input type="hidden" name="remove" value="1"><button type="submit" class="secondary" aria-label="Remove one {{ item.product.name }}">-</button></form>
+            <form method="post">{% csrf_token %}<input type="hidden" name="cart_item" value="{{ item.cart_item }}"><button type="submit" aria-label="Add one more {{ item.product.name }}{% if item.size %}, size {{ item.size }}{% endif %}">+</button></form>
+            <form method="post">{% csrf_token %}<input type="hidden" name="cart_item" value="{{ item.cart_item }}"><input type="hidden" name="remove" value="1"><button type="submit" class="secondary" aria-label="Remove one {{ item.product.name }}{% if item.size %}, size {{ item.size }}{% endif %}">-</button></form>
           </div>
         </td>
       </tr>

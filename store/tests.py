@@ -45,8 +45,37 @@ class StripeCheckoutTests(TestCase):
 
     def _add_product_to_cart(self):
         session = self.client.session
-        session["cart"] = {str(self.product.id): 2}
+        session["cart"] = {f"{self.product.id}:M": 2}
         session.save()
+
+    def test_tee_requires_a_size_and_keeps_it_in_cart(self):
+        response = self.client.post(reverse("products"), {"product": self.product.id, "size": "L"})
+
+        self.assertRedirects(response, reverse("products"))
+        self.assertEqual(self.client.session["cart"], {f"{self.product.id}:L": 1})
+
+        cart_response = self.client.get(reverse("cart"))
+        self.assertContains(cart_response, "Size L")
+
+    def test_tee_without_a_size_is_not_added_to_cart(self):
+        response = self.client.post(reverse("products"), {"product": self.product.id})
+
+        self.assertRedirects(response, reverse("products"))
+        self.assertNotIn("cart", self.client.session)
+
+    def test_hat_does_not_require_a_size(self):
+        hat_category = Category.objects.create(name="Hats")
+        hat = Products.objects.create(
+            name="Dune Dogs Blue Corduroy Hat",
+            price=35,
+            category=hat_category,
+            image="uploads/products/blue_corduroy_hat.png",
+        )
+
+        response = self.client.post(reverse("products"), {"product": hat.id})
+
+        self.assertRedirects(response, reverse("products"))
+        self.assertEqual(self.client.session["cart"], {str(hat.id): 1})
 
     @override_settings(
         STRIPE_CHECKOUT_ENABLED=True,
@@ -64,7 +93,7 @@ class StripeCheckoutTests(TestCase):
 
         checkout_session = create_checkout_session(
             request,
-            [{"product": self.product, "quantity": 2, "item_total": 80}],
+            [{"product": self.product, "size": "M", "quantity": 2, "item_total": 80}],
             shipping_amount=7,
             service_fee_amount=Decimal("1.72"),
         )
@@ -72,7 +101,11 @@ class StripeCheckoutTests(TestCase):
         self.assertEqual(checkout_session.id, "cs_test_dune")
         options = stripe_client.return_value.checkout.Session.create.call_args.kwargs
         self.assertEqual(options["line_items"][0]["price_data"]["unit_amount"], 4000)
+        self.assertEqual(options["line_items"][0]["price_data"]["product_data"]["name"], "Dune Dogs Black Logo Tee - M")
         self.assertEqual(options["line_items"][0]["quantity"], 2)
+        self.assertEqual(options["metadata"]["items"], "2x Dune Dogs Black Logo Tee (M)")
+        self.assertEqual(options["payment_intent_data"]["description"], "Dune Dogs order: 2x Dune Dogs Black Logo Tee (M)")
+        self.assertEqual(options["payment_intent_data"]["metadata"]["items"], "2x Dune Dogs Black Logo Tee (M)")
         self.assertEqual(options["line_items"][1]["price_data"]["product_data"]["name"], "Service fee")
         self.assertEqual(options["line_items"][1]["price_data"]["unit_amount"], 172)
         self.assertEqual(
@@ -110,6 +143,7 @@ class StripeCheckoutTests(TestCase):
         self.assertEqual(order.service_fee_amount, Decimal("2.91"))
         self.assertEqual(order.total_amount, Decimal("89.91"))
         self.assertEqual(order.line_items[0]["quantity"], 2)
+        self.assertEqual(order.line_items[0]["size"], "M")
 
     @override_settings(
         STRIPE_SERVICE_FEE_PERCENT=Decimal("2.9"),
@@ -117,7 +151,7 @@ class StripeCheckoutTests(TestCase):
     )
     def test_order_total_includes_grossed_up_service_fee(self):
         cart_items, subtotal, shipping, service_fee, total = _build_order_totals(
-            {str(self.product.id): 1}
+            {f"{self.product.id}:M": 1}
         )
 
         self.assertEqual(len(cart_items), 1)

@@ -23,6 +23,8 @@ class Category(models.Model):
 
 
 class Products(models.Model):
+    TEE_SIZES = ("XS", "S", "M", "L", "XL")
+
     # Defines a database table for products
     name = models.CharField(max_length=60)
     # Product name
@@ -45,6 +47,17 @@ class Products(models.Model):
 
     shopify_variant_id = models.CharField(max_length=120, blank=True, default="")
     # Retained only for historical records. The live checkout no longer uses Shopify.
+
+    @property
+    def available_sizes(self):
+        """Only the live tee category needs a customer-selected size."""
+        if self.category.name.casefold() == "t-shirts":
+            return self.TEE_SIZES
+        return ()
+
+    @property
+    def requires_size(self):
+        return bool(self.available_sizes)
 
     @staticmethod
     def get_products_by_id(ids):

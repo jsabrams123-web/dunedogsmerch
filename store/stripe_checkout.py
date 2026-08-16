@@ -42,6 +42,16 @@ def _stripe_client():
     return stripe
 
 
+def _checkout_item_summary(cart_items):
+    """Keep a readable, non-sensitive item summary on the Stripe payment."""
+    pieces = []
+    for item in cart_items:
+        size = f" ({item['size']})" if item.get("size") else ""
+        pieces.append(f"{item['quantity']}x {item['product'].name}{size}")
+
+    return "; ".join(pieces)[:450]
+
+
 def create_checkout_session(request, cart_items, shipping_amount, service_fee_amount=0):
     """Create a Stripe-hosted payment session from the server-side cart."""
     if not settings.STRIPE_CHECKOUT_ENABLED:
@@ -52,7 +62,13 @@ def create_checkout_session(request, cart_items, shipping_amount, service_fee_am
         {
             "price_data": {
                 "currency": "usd",
-                "product_data": {"name": item["product"].name},
+                "product_data": {
+                    "name": (
+                        f"{item['product'].name} - {item['size']}"
+                        if item.get("size")
+                        else item["product"].name
+                    ),
+                },
                 "unit_amount": _amount_in_cents(item["product"].price),
             },
             "quantity": item["quantity"],
@@ -73,6 +89,7 @@ def create_checkout_session(request, cart_items, shipping_amount, service_fee_am
         )
     success_url = request.build_absolute_uri(reverse("stripe_success"))
     success_url = f"{success_url}?session_id={{CHECKOUT_SESSION_ID}}"
+    item_summary = _checkout_item_summary(cart_items)
 
     try:
         session = stripe.checkout.Session.create(
@@ -96,6 +113,11 @@ def create_checkout_session(request, cart_items, shipping_amount, service_fee_am
             success_url=success_url,
             cancel_url=request.build_absolute_uri(reverse("cart")),
             submit_type="pay",
+            metadata={"items": item_summary},
+            payment_intent_data={
+                "description": f"Dune Dogs order: {item_summary}",
+                "metadata": {"items": item_summary},
+            },
         )
     except stripe.error.StripeError as error:
         logger.error(
